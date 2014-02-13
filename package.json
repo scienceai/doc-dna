@@ -1,0 +1,31 @@
+{
+  "name": "datapackage-dna",
+  "version": "0.0.0",
+  "description": "dependencies graph of a datapackage.jsonld",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/watchify main.js --debug -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/standard-analytics/datapackage-dna.git"
+  },
+  "keywords": [
+    "hyperdata",
+    "datapackage.jsonld",
+    "dependencies",
+    "graph"
+  ],
+  "author": "Sebastien Ballesteros",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/standard-analytics/datapackage-dna/issues"
+  },
+  "homepage": "https://github.com/standard-analytics/datapackage-dna",
+  "devDependencies": {
+    "watchify": "~0.6.1"
+  },
+  "dependencies": {
+    "d3": "~3.4.1"
+  }
+}

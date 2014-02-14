@@ -1,10 +1,11 @@
 {
   "name": "datapackage-dna",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "dependencies graph of a datapackage.jsonld",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/watchify main.js --debug -o bundle.js"
+    "start": "./node_modules/.bin/watchify demo.js --debug -o bundle.js",
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,11 @@
   },
   "homepage": "https://github.com/standard-analytics/datapackage-dna",
   "devDependencies": {
-    "watchify": "~0.6.1"
+    "watchify": "~0.6.1",
+    "mocha": "~1.17.1"
   },
   "dependencies": {
-    "d3": "~3.4.1"
+    "d3": "~3.4.1",
+    "is-url": "~1.0.0"
   }
 }

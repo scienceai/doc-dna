@@ -4,19 +4,30 @@
     <meta charset="utf-8">
     <script src="bundle.js"></script>
     <style>
-      body {
-        font: 10px sans-serif;
-      }
-
       .chord {
         fill-opacity: .67;
       }
 
       .chart{
-        width:33%;
+        font: 10px sans-serif;
+        width:400px;
         float:left;
       }
     </style>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        var x = dpkgDna.graph().padding(0.08);
+      
+        d3.selectAll('.chart')
+          .data([
+            dpkgDna.compute({name:'mydpkg', version:'0.0.0', dataset:[{name:'data', '@id': 'mydpkg/0.0.0/dataset/data'}]}),
+            dpkgDna.compute(dpkgInd),
+            dpkgDna.compute(dpkg)
+          ])
+          .call(x);
+      });
+    </script>
   </head>
 
   <body>

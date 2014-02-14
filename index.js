@@ -1,20 +1,22 @@
-var d3 = require('d3');
+var d3 = require('d3')
+  , url = require('url')
+  , isUrl = require('is-url');
 
 /**
  * Adapted from https://github.com/fzaninotto/DependencyWheel for
  * complete source and license (MIT licensed by François Zaninotto)
  */
 
-function dpkgDna (options) {
+function graph (options) {
 
-  var width = 500
+  var width = 400
     , margin = 80
-    , padding = 0.04;
+    , padding = 0.06;
 
   var cols = {
     dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"],
     code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],
-    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"]    
+    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"]
   };
   
   function chart(selection) {
@@ -42,14 +44,12 @@ function dpkgDna (options) {
 
       var arc = d3.svg.arc()
         .innerRadius(radius)
-        .outerRadius(radius + 20);
+        .outerRadius(radius *1.1);
 
       var fill = function(d) {
         var label = labels[d.index];
         return cols[label.type][d.index % cols[label.type].length]
       };
-
-
 
       // Returns an event handler for fading a given chord group.
       var fade = function(opacity) {
@@ -132,7 +132,7 @@ function dpkgDna (options) {
         })
         .style("opacity", 1);
     });
-  }
+  };
 
   chart.width = function(value) {
     if (!arguments.length) return width;
@@ -155,65 +155,85 @@ function dpkgDna (options) {
   return chart;
 };
 
+/**
+ * from uri to local pathname (used as id)
+ */
+function _uri2id(uri, name, version){
+  var BASE = "https://registry.standardanalytics.io/";
 
-document.addEventListener('DOMContentLoaded', function(){
+  var absUrl = (isUrl(uri)) ? uri : url.resolve(BASE, uri);
+  var urlObj = url.parse(absUrl, true);
 
-  var x = dpkgDna().padding(0.06);
+  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a dpkg of this registry
+    var id = urlObj.pathname.replace(/^\//, '');
 
-  d3.selectAll('.chart')
-    .data([
-      {
-        labels: [
-          {name:'code', type:'code'},
-          {name:'data', type:'dataset'},
-          {name:'figure', type: 'figure'} 
-        ],
-        matrix: [
-          [1, 0, 0],
-          [0, 1, 0],
-          [0, 0, 1]
-        ]
-      },
-      {
-        labels: [
-          { name: 'figure1', type: 'figure' }, 
-          { name: 'figure2', type: 'figure' }, 
-          { name: 'code', type: 'code' }, 
-          { name: 'result1', type: 'dataset' }, 
-          { name: 'result2', type: 'dataset' }, 
-          { name: 'data', type: 'dataset' }
-        ],
-        matrix: [
-          [0, 0, 0, 0, 0, 0], //fig1 needed by nothing
-          [0, 0, 0, 0, 0, 0], //fig2 needed by nothing
-          [1, 1, 0, 1, 1, 0], //code needed by fig1 and fig2 and res1 and res2
-          [1, 0, 0, 0, 0, 0], //res1 needed by fig1
-          [0, 1, 0, 0, 0, 0], //res2 needed by fig2
-          [1, 1 ,1, 1, 1, 0]  //data needed by figs code and res
-        ]
-      },
-      {
-        labels: [
-          { name: 'figure1', type: 'figure' }, 
-          { name: 'figure2', type: 'figure' }, 
-          { name: 'code', type: 'code' }, 
-          { name: 'result1', type: 'dataset' }, 
-          { name: 'result2', type: 'dataset' }, 
-          { name: 'data1', type: 'dataset' },
-          { name: 'data2', type: 'dataset' }
-        ],
-        matrix: [
-          [0, 0, 0, 0, 0, 0 ,0], //fig1 needed by nothing
-          [0, 0, 0, 0, 0, 0 ,0], //fig2 needed by nothing
-          [1, 1, 0, 1, 1, 0 ,0], //code needed by fig1 and fig2 and res1 and res2
-          [1, 0, 0, 0, 0, 0 ,0], //res1 needed by fig1
-          [0, 1, 0, 0, 0, 0 ,0], //res2 needed by fig2
-          [1, 0 ,1, 1, 0, 0 ,0], //data1 needed by fig1 code and res1
-          [0, 1 ,1, 0, 1, 0 ,0]  //data2 needed by fig2 code and res2
-        ]
+    //check if it's a within dpkg uri
+    if(name && version){
+      var splt = id.split('/'); //name, version, ...
+      if(splt[0] === name && splt[1] === version){
+        return id;
       }
-    ])
-    .call(x);
+    } else {
+      return id;
+    }
+    
+  }
+};
 
-});
 
+function compute(dpkg){
+  var d = dpkg.dataset || []
+    , c = dpkg.code || []
+    , f = dpkg.figure || [];
+
+  var labels = [];
+  var tmp = [];
+  var ndeps = 0;
+
+  ['dataset', 'code', 'figure'].forEach(function(t){
+    var arr = dpkg[t] || [];
+    arr.forEach(function(x){
+      var id = _uri2id(x['@id'], dpkg.name, dpkg.version);
+      if(id){
+        labels.push({ name: x.name, type: t });
+        var entry = {
+          id: id,
+          deps: ((x.targetProduct && x.targetProduct.input) || x.isBasedOnUrl || [])
+            .map(function(x){
+              return _uri2id(x, dpkg.name, dpkg.version);
+            })
+            .filter(function(x) {return x;})
+        };
+        tmp.push(entry);
+        ndeps += entry.deps.length;
+      }
+    });
+  });
+  
+  //tmp to matrix TODO optimize with has o(N^2) is not acceptable
+  var matrix = [];
+  tmp.forEach(function(x, i){
+    var row = Array.apply(null, new Array(tmp.length)).map(Number.prototype.valueOf,0);
+    if(!ndeps){
+      row[i] = 1;
+    } else {
+      tmp.forEach(function(y, j){
+        if(y.deps.indexOf(x.id) !== -1){
+          row[j] = 1;
+        }
+      });
+    }
+    matrix.push(row);
+  });
+
+  return {
+    labels: labels,
+    matrix: matrix
+  };
+  
+};
+
+if (typeof module !== 'undefined' && module.exports){
+  exports.graph = graph;
+  exports.compute = compute;
+}

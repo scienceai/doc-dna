@@ -1,7 +1,7 @@
 {
-  "name": "datapackage-dna",
-  "version": "0.0.1",
-  "description": "dependencies graph of a datapackage.jsonld",
+  "name": "container-dna",
+  "version": "0.0.0",
+  "description": "dependencies graph of a container.jsonld",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/watchify demo.js --debug -o bundle.js",
@@ -9,20 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/standard-analytics/datapackage-dna.git"
+    "url": "git://github.com/standard-analytics/container-dna.git"
   },
   "keywords": [
     "hyperdata",
-    "datapackage.jsonld",
+    "container.jsonld",
     "dependencies",
     "graph"
   ],
   "author": "Sebastien Ballesteros",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/standard-analytics/datapackage-dna/issues"
+    "url": "https://github.com/standard-analytics/container-dna/issues"
   },
-  "homepage": "https://github.com/standard-analytics/datapackage-dna",
+  "homepage": "https://github.com/standard-analytics/container-dna",
   "devDependencies": {
     "watchify": "~0.6.1",
     "mocha": "~1.17.1"

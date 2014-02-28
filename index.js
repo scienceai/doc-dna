@@ -164,10 +164,10 @@ function _uri2id(uri, name, version){
   var absUrl = (isUrl(uri)) ? uri : url.resolve(BASE, uri);
   var urlObj = url.parse(absUrl, true);
 
-  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a dpkg of this registry
+  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a ctnr of this registry
     var id = urlObj.pathname.replace(/^\//, '');
 
-    //check if it's a within dpkg uri
+    //check if it's a within ctnr uri
     if(name && version){
       var splt = id.split('/'); //name, version, ...
       if(splt[0] === name && splt[1] === version){
@@ -181,34 +181,36 @@ function _uri2id(uri, name, version){
 };
 
 
-function compute(dpkg){
-  var d = dpkg.dataset || []
-    , c = dpkg.code || []
-    , f = dpkg.figure || [];
+function compute(ctnr){
+  var d = ctnr.dataset || []
+    , c = ctnr.code || []
+    , f = ctnr.figure || [];
 
   var labels = [];
   var tmp = [];
   var ndeps = 0;
 
   ['dataset', 'code', 'figure'].forEach(function(t){
-    var arr = dpkg[t] || [];
+    var arr = ctnr[t] || [];
     arr.forEach(function(x){
-      var id = _uri2id(x['@id'], dpkg.name, dpkg.version);
+      var id = _uri2id(x['@id'], ctnr.name, ctnr.version);
       if(id){
         labels.push({ name: x.name, type: t });
         var entry = {
           id: id,
           deps: ((x.targetProduct && x.targetProduct.input) || x.isBasedOnUrl || [])
             .map(function(x){
-              return _uri2id(x, dpkg.name, dpkg.version);
+              return _uri2id(x, ctnr.name, ctnr.version);
             })
             .filter(function(x) {return x;})
         };
+
         tmp.push(entry);
         ndeps += entry.deps.length;
       }
     });
   });
+
   
   //tmp to matrix TODO optimize with has o(N^2) is not acceptable
   var matrix = [];

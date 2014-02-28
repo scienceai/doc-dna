@@ -17,13 +17,13 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function(){
-        var x = dpkgDna.graph().padding(0.08);
+        var x = ctnrDna.graph().padding(0.08);
       
         d3.selectAll('.chart')
           .data([
-            dpkgDna.compute({name:'mydpkg', version:'0.0.0', dataset:[{name:'data', '@id': 'mydpkg/0.0.0/dataset/data'}]}),
-            dpkgDna.compute(dpkgInd),
-            dpkgDna.compute(dpkg)
+            ctnrDna.compute({name:'myctnr', version:'0.0.0', dataset:[{name:'data', '@id': 'myctnr/0.0.0/dataset/data'}]}),
+            ctnrDna.compute(ctnrInd),
+            ctnrDna.compute(ctnr)
           ])
           .call(x);
       });

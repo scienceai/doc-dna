@@ -1,8 +1,8 @@
-var ctnrDna = require('../index')
+var pkgDna = require('../index')
   , demo = require('../demo')
   , assert = require('assert');
 
-describe('ctnrDna', function(){
+describe('pkgDna', function(){
 
   describe('compute', function(){
     it('should compute the data needed for a chord diagram', function(){    
@@ -28,7 +28,7 @@ describe('ctnrDna', function(){
         ] 
       };
 
-      var data = ctnrDna.compute(demo.ctnr);
+      var data = pkgDna.compute(demo.pkg);
       assert.deepEqual(data, expected);
     });
 
@@ -47,7 +47,7 @@ describe('ctnrDna', function(){
         ]
       };
 
-      var data = ctnrDna.compute(demo.ctnrInd);
+      var data = pkgDna.compute(demo.pkgInd);
       assert.deepEqual(data, expected);    
     });
 

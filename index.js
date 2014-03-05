@@ -164,10 +164,10 @@ function _uri2id(uri, name, version){
   var absUrl = (isUrl(uri)) ? uri : url.resolve(BASE, uri);
   var urlObj = url.parse(absUrl, true);
 
-  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a ctnr of this registry
+  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a pkg of this registry
     var id = urlObj.pathname.replace(/^\//, '');
 
-    //check if it's a within ctnr uri
+    //check if it's a within pkg uri
     if(name && version){
       var splt = id.split('/'); //name, version, ...
       if(splt[0] === name && splt[1] === version){
@@ -181,26 +181,26 @@ function _uri2id(uri, name, version){
 };
 
 
-function compute(ctnr){
-  var d = ctnr.dataset || []
-    , c = ctnr.code || []
-    , f = ctnr.figure || [];
+function compute(pkg){
+  var d = pkg.dataset || []
+    , c = pkg.code || []
+    , f = pkg.figure || [];
 
   var labels = [];
   var tmp = [];
   var ndeps = 0;
 
   ['dataset', 'code', 'figure'].forEach(function(t){
-    var arr = ctnr[t] || [];
+    var arr = pkg[t] || [];
     arr.forEach(function(x){
-      var id = _uri2id(x['@id'], ctnr.name, ctnr.version);
+      var id = _uri2id(x['@id'], pkg.name, pkg.version);
       if(id){
         labels.push({ name: x.name, type: t });
         var entry = {
           id: id,
           deps: ((x.targetProduct && x.targetProduct.input) || x.isBasedOnUrl || [])
             .map(function(x){
-              return _uri2id(x, ctnr.name, ctnr.version);
+              return _uri2id(x, pkg.name, pkg.version);
             })
             .filter(function(x) {return x;})
         };

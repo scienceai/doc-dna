@@ -1,9 +1,9 @@
-datapackage-dna
-===============
+package-dna
+===========
 
-Plot the DNA of a scientific paper.
+Plot the DNA of a package.jsonld.
 
-Adapted for datapackage.jsonld from
+Adapted for package.jsonld from
 [DependencyWheel](https://github.com/fzaninotto/DependencyWheel) by
 François Zaninotto.
 

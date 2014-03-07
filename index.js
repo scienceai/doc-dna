@@ -16,7 +16,8 @@ function graph (options) {
   var cols = {
     dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"],
     code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],
-    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"]
+    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],
+    article: ["#000000"] //black because articles are evil
   };
   
   function chart(selection) {
@@ -182,15 +183,11 @@ function _uri2id(uri, name, version){
 
 
 function compute(pkg){
-  var d = pkg.dataset || []
-    , c = pkg.code || []
-    , f = pkg.figure || [];
-
   var labels = [];
   var tmp = [];
   var ndeps = 0;
 
-  ['dataset', 'code', 'figure'].forEach(function(t){
+  ['dataset', 'code', 'figure', 'article'].forEach(function(t){
     var arr = pkg[t] || [];
     arr.forEach(function(x){
       var id = _uri2id(x['@id'], pkg.name, pkg.version);

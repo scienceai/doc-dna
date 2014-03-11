@@ -1,5 +1,6 @@
 var d3 = require('d3')
   , url = require('url')
+  , pjsonld = require('package-jsonld')
   , isUrl = require('is-url');
 
 /**
@@ -17,7 +18,7 @@ function graph (options) {
     dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"],
     code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],
     figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],
-    article: ["#000000"] //black because articles are evil
+    article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"]
   };
   
   function chart(selection) {
@@ -160,7 +161,7 @@ function graph (options) {
  * from uri to local pathname (used as id)
  */
 function _uri2id(uri, name, version){
-  var BASE = "https://registry.standardanalytics.io/";
+  var BASE = pjsonld.BASE;
 
   var absUrl = (isUrl(uri)) ? uri : url.resolve(BASE, uri);
   var urlObj = url.parse(absUrl, true);
@@ -195,7 +196,12 @@ function compute(pkg){
         labels.push({ name: x.name, type: t });
         var entry = {
           id: id,
-          deps: ((x.targetProduct && x.targetProduct.input) || x.isBasedOnUrl || [])
+          deps: []
+            .concat(
+              ((x.targetProduct && x.targetProduct.input) || []),  
+              (x.isBasedOnUrl || []),
+              ((x.citation && x.citation.map(function(c){return c.url;}) ) || [])
+            )
             .map(function(x){
               return _uri2id(x, pkg.name, pkg.version);
             })
@@ -224,6 +230,7 @@ function compute(pkg){
     }
     matrix.push(row);
   });
+
 
   return {
     labels: labels,

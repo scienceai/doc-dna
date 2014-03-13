@@ -76,11 +76,11 @@ var pkgInd = {
 if (typeof module !== 'undefined' && module.exports){
   exports.pkg = pkg;
   exports.pkgInd = pkgInd;
-} 
+}
 
 if(typeof window !== 'undefined'){
   window.pkg = pkg;
-  window.pkgInd = pkgInd;  
+  window.pkgInd = pkgInd;
   window.d3 = d3;
   window.pkgDna = pkgDna;
 }

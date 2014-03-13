@@ -20,7 +20,7 @@ function graph (options) {
     figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],
     article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"]
   };
-  
+
   function chart(selection) {
     selection.each(function(data) {
 
@@ -118,7 +118,7 @@ function graph (options) {
             "translate(" + (radius + 26) + ")" +
             (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .text(function(d) { return labels[d.index].name; })
+        .text(function(d) { if(labels[d.index].name.length>11){return labels[d.index].name.slice(0,4) + '...' + labels[d.index].name.slice(labels[d.index].name.length-4,labels[d.index].name.length)} else { return labels[d.index].name } })//labels[d.index].name; })
         .on("mouseover", fade(0.1))
         .on("mouseout", fade(1));
 
@@ -178,7 +178,7 @@ function _uri2id(uri, name, version){
     } else {
       return id;
     }
-    
+
   }
 };
 
@@ -198,7 +198,7 @@ function compute(pkg){
           id: id,
           deps: []
             .concat(
-              ((x.targetProduct && x.targetProduct.input) || []),  
+              ((x.targetProduct && x.targetProduct.input) || []),
               (x.isBasedOnUrl || []),
               ((x.citation && x.citation.map(function(c){return c.url;}) ) || [])
             )
@@ -214,7 +214,7 @@ function compute(pkg){
     });
   });
 
-  
+
   //tmp to matrix TODO optimize with has o(N^2) is not acceptable
   var matrix = [];
   tmp.forEach(function(x, i){
@@ -236,7 +236,7 @@ function compute(pkg){
     labels: labels,
     matrix: matrix
   };
-  
+
 };
 
 if (typeof module !== 'undefined' && module.exports){

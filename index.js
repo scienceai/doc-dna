@@ -12,6 +12,8 @@ function graph (options) {
 
   var width = 400
     , margin = 80
+    , paddingText = 26
+    , printType = false
     , padding = 0.06;
 
   var cols = {
@@ -22,7 +24,7 @@ function graph (options) {
   };
 
   function chart(selection) {
-    selection.each(function(data) {
+    selection.each(function(data, selectionIndex) {
 
       var matrix = data.matrix;
       var labels = data.labels;
@@ -115,12 +117,52 @@ function graph (options) {
         .attr("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
         .attr("transform", function(d) {
           return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")" +
-            "translate(" + (radius + 26) + ")" +
+            "translate(" + (radius + paddingText) + ")" +
             (d.angle > Math.PI ? "rotate(180)" : "");
         })
-        .text(function(d) { if(labels[d.index].name.length>11){return labels[d.index].name.slice(0,4) + '...' + labels[d.index].name.slice(labels[d.index].name.length-4,labels[d.index].name.length)} else { return labels[d.index].name } })//labels[d.index].name; })
-        .on("mouseover", fade(0.1))
-        .on("mouseout", fade(1));
+        .text(function(d) {
+          if(printType){
+            return (labels[d.index].type === 'dataset') ? 'data': labels[d.index].type;
+          }else {
+            if(labels[d.index].name.length>11){
+              return labels[d.index].name.slice(0,4) + '...' + labels[d.index].name.slice(labels[d.index].name.length-4,labels[d.index].name.length);
+            } else {
+              return labels[d.index].name;
+            }
+          }
+        })
+        .on("mouseover", function(d, i){
+          fade(0.1)(d, i);
+
+          var label = labels[d.index];
+          var col = cols[label.type][d.index % cols[label.type].length]
+
+
+          var el = selection[0][selectionIndex];
+
+          var event
+          if (window.CustomEvent) {
+            event = new CustomEvent('show', {detail: {id:labels[d.index].name, color: col}});
+          } else {
+            event = document.createEvent('CustomEvent');
+            event.initCustomEvent('show', true, true, {detail: {id:labels[d.index].name, color: col}});
+          }
+          el.dispatchEvent(event);
+        })
+        .on("mouseout", function(d, i){
+          var el = selection[0][selectionIndex];
+
+          var event
+          if (window.CustomEvent) {
+            event = new CustomEvent('hide', {detail: {id:labels[d.index].name}});
+          } else {
+            event = document.createEvent('CustomEvent');
+            event.initCustomEvent('hide', true, true, {detail: {id:labels[d.index].name}});
+          }
+          el.dispatchEvent(event);
+
+          fade(1)(d, i);
+        });
 
       gEnter.selectAll("path.chord")
         .data(chord.chords)
@@ -151,6 +193,17 @@ function graph (options) {
   chart.padding = function(value) {
     if (!arguments.length) return padding;
     padding = value;
+    return chart;
+  };
+
+  chart.paddingText = function(value) {
+    if (!arguments.length) return paddingText;
+    paddingText = value;
+    return chart;
+  };
+
+  chart.printType = function() {
+    printType = true;
     return chart;
   };
 

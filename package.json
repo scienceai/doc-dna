@@ -1,6 +1,6 @@
 {
   "name": "package-dna",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "dependencies graph of a package.jsonld",
   "main": "index.js",
   "scripts": {

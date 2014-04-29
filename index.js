@@ -253,7 +253,7 @@ function compute(pkg){
             .concat(
               ((x.targetProduct && x.targetProduct.input) || []),
               (x.isBasedOnUrl || []),
-              ((x.citation && x.citation.map(function(c){return c.url;}) ) || [])
+              ((x.citation && x.citation.filter(function(c){ return (c.url!=undefined) }).map(function(c){return c.url;})) || [])
             )
             .map(function(x){
               return _uri2id(x, pkg.name, pkg.version);

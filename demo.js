@@ -29,10 +29,10 @@ var pkg = {
     {
       '@id': 'mypkg/0.0.0/code/code',
       name: 'code',
-      targetProduct:{
+      targetProduct: [{
         input: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/dataset/data2'],
         output: ['mypkg/0.0.0/dataset/result1', 'mypkg/0.0.0/dataset/result2', 'mypkg/0.0.0/dataset/figure1', 'mypkg/0.0.0/dataset/figure2']
-      }
+      }]
     }
   ],
   figure: [

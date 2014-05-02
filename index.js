@@ -17,10 +17,12 @@ function graph (options) {
     , padding = 0.06;
 
   var cols = {
-    dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"],
-    code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],
-    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],
-    article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"]
+    dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"], //RdPu
+    code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],    //YlOrRd
+    article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"], //Greys
+    figure: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],  //PuBu
+    audio: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"],   //YlGn
+    video: ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"]    //Reds
   };
 
   function chart(selection) {
@@ -241,17 +243,26 @@ function compute(pkg){
   var tmp = [];
   var ndeps = 0;
 
-  ['dataset', 'code', 'figure', 'article'].forEach(function(t){
+  [ 'dataset', 'code', 'figure', 'audio', 'video', 'article' ].forEach(function(t){
     var arr = pkg[t] || [];
     arr.forEach(function(x){
       var id = _uri2id(x['@id'], pkg.name, pkg.version);
       if(id){
         labels.push({ name: x.name, type: t });
+
+        var deps = [];
+        if (t === 'code') {
+          (x.targetProduct || []).forEach(function(m){
+            if(m.input){
+              deps = deps.concat(m.input);
+            }
+          });
+        }
+
         var entry = {
           id: id,
-          deps: []
+          deps: deps
             .concat(
-              ((x.targetProduct && x.targetProduct.input) || []),
               (x.isBasedOnUrl || []),
               ((x.citation && x.citation.filter(function(c){ return (c.url!=undefined) }).map(function(c){return c.url;})) || [])
             )
@@ -266,7 +277,6 @@ function compute(pkg){
       }
     });
   });
-
 
   //tmp to matrix TODO optimize with has o(N^2) is not acceptable
   var matrix = [];
@@ -283,7 +293,6 @@ function compute(pkg){
     }
     matrix.push(row);
   });
-
 
   return {
     labels: labels,

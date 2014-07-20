@@ -13,18 +13,18 @@ describe('pkgDna', function(){
           { name: 'data2', type: 'dataset' },
           { name: 'result1', type: 'dataset' },
           { name: 'result2', type: 'dataset' },
-          { name: 'code', type: 'code' },
-          { name: 'figure1', type: 'figure' },
-          { name: 'figure2', type: 'figure' } 
+          { name: 'sourceCode', type: 'sourceCode' },
+          { name: 'image1', type: 'image' },
+          { name: 'image2', type: 'image' } 
         ],
         matrix: [
-          [ 0, 1, 1, 0, 1, 1, 0 ], //data1 needed by data2, result1, code and figure1
-          [ 0, 0, 0, 1, 1, 0, 1 ], //data2 needed by result2, code and figure2
-          [ 0, 0, 0, 0, 0, 1, 0 ], //result1 needed by figure 1
-          [ 0, 0, 0, 0, 0, 0, 1 ], //result2 needed by figure 2
-          [ 0, 0, 1, 1, 0, 1, 1 ], //code needed by results1, results2, figure1 and figure2
-          [ 0, 0, 0, 0, 0, 0, 0 ], //figure 1 needed by nothing
-          [ 0, 0, 0, 0, 0, 0, 0 ], //figure 2 needed by nothing
+          [ 0, 1, 1, 0, 1, 1, 0 ], //data1 needed by data2, result1, sourceCode and image1
+          [ 0, 0, 0, 1, 1, 0, 1 ], //data2 needed by result2, sourceCode and image2
+          [ 0, 0, 0, 0, 0, 1, 0 ], //result1 needed by image 1
+          [ 0, 0, 0, 0, 0, 0, 1 ], //result2 needed by image 2
+          [ 0, 0, 1, 1, 0, 1, 1 ], //sourceCode needed by results1, results2, image1 and image2
+          [ 0, 0, 0, 0, 0, 0, 0 ], //image 1 needed by nothing
+          [ 0, 0, 0, 0, 0, 0, 0 ], //image 2 needed by nothing
         ] 
       };
 
@@ -37,8 +37,8 @@ describe('pkgDna', function(){
       var expected = {
         labels: [
           { name: 'data', type: 'dataset' },
-          { name: 'code', type: 'code' },
-          { name: 'figure', type: 'figure' } 
+          { name: 'sourceCode', type: 'sourceCode' },
+          { name: 'image', type: 'image' } 
         ],
         matrix: [ //diag matrix if no deps
           [ 1, 0, 0 ],

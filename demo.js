@@ -17,34 +17,34 @@ var pkg = {
     {
       '@id': 'mypkg/0.0.0/dataset/result1',
       name: 'result1',
-      isBasedOnUrl: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/code/code']
+      isBasedOnUrl: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/sourceCode/sourceCode']
     },
     {
       '@id': 'mypkg/0.0.0/dataset/result2',
       name: 'result2',
-      isBasedOnUrl: ['mypkg/0.0.0/dataset/data2', 'mypkg/0.0.0/code/code']
+      isBasedOnUrl: ['mypkg/0.0.0/dataset/data2', 'mypkg/0.0.0/sourceCode/sourceCode']
     }
   ],
-  code: [
+  sourceCode: [
     {
-      '@id': 'mypkg/0.0.0/code/code',
-      name: 'code',
+      '@id': 'mypkg/0.0.0/sourceCode/sourceCode',
+      name: 'sourceCode',
       targetProduct: [{
         input: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/dataset/data2'],
-        output: ['mypkg/0.0.0/dataset/result1', 'mypkg/0.0.0/dataset/result2', 'mypkg/0.0.0/dataset/figure1', 'mypkg/0.0.0/dataset/figure2']
+        output: ['mypkg/0.0.0/dataset/result1', 'mypkg/0.0.0/dataset/result2', 'mypkg/0.0.0/dataset/image1', 'mypkg/0.0.0/dataset/image2']
       }]
     }
   ],
-  figure: [
+  image: [
     {
-      '@id': 'mypkg/0.0.0/figure/figure1',
-      name: 'figure1',
-      isBasedOnUrl: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/dataset/result1', 'mypkg/0.0.0/code/code']
+      '@id': 'mypkg/0.0.0/image/image1',
+      name: 'image1',
+      isBasedOnUrl: ['mypkg/0.0.0/dataset/data1', 'mypkg/0.0.0/dataset/result1', 'mypkg/0.0.0/sourceCode/sourceCode']
     },
     {
-      '@id': 'mypkg/0.0.0/figure1/figure2',
-      name: 'figure2',
-      isBasedOnUrl: ['mypkg/0.0.0/dataset/data2', 'mypkg/0.0.0/dataset/result2', 'mypkg/0.0.0/code/code']
+      '@id': 'mypkg/0.0.0/image1/image2',
+      name: 'image2',
+      isBasedOnUrl: ['mypkg/0.0.0/dataset/data2', 'mypkg/0.0.0/dataset/result2', 'mypkg/0.0.0/sourceCode/sourceCode']
     }
   ]
 };
@@ -58,16 +58,16 @@ var pkgInd = {
       name: 'data'
     }
   ],
-  code: [
+  sourceCode: [
     {
-      '@id': 'mypkg/0.0.0/code/code',
-      name: 'code'
+      '@id': 'mypkg/0.0.0/sourceCode/sourceCode',
+      name: 'sourceCode'
     }
   ],
-  figure: [
+  image: [
     {
-      '@id': 'mypkg/0.0.0/figure/figure',
-      name: 'figure'
+      '@id': 'mypkg/0.0.0/image/image',
+      name: 'image'
     }
   ]
 };

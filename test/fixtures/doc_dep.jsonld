@@ -1,0 +1,58 @@
+{
+  "@context": "https://dcat.io",
+  "@id": "doc-dep",
+  "name": "doc dep",
+  "version": "0.0.0",
+  "hasPart": [
+    {
+      "@id": "doc-dep/data1",
+      "@type": "Dataset",
+      "name": "data1",
+      "distribution": {"@type": "DataDownload"}
+    },
+    {
+      "@id": "doc-dep/data2",
+      "@type": "Dataset",
+      "name": "data2",
+      "isBasedOnUrl": ["doc-dep/data1"],
+      "distribution": {"@type": "DataDownload"}
+    },
+    {
+      "@id": "doc-dep/result1",
+      "@type": "Dataset",
+      "name": "result1",
+      "isBasedOnUrl": ["doc-dep/data1", "doc-dep/prog"],
+      "distribution": {"@type": "DataDownload"}
+    },
+    {
+      "@id": "doc-dep/result2",
+      "@type": "Dataset",
+      "name": "result2",
+      "isBasedOnUrl": ["doc-dep/data2", "doc-dep/prog"],
+      "distribution": {"@type": "DataDownload"}
+    },
+
+    {
+      "@id": "doc-dep/prog",
+      "@type": "SoftwareApplication",
+      "name": "prog",
+      "downloadUrl": "http://example.com/prog",
+      "requirements": ["doc-dep/data1", "doc-dep/data2"]
+    },
+
+    {
+      "@id": "doc-dep/image1",
+      "@type": "ImageObject",
+      "name": "image1",
+      "isBasedOnUrl": ["doc-dep/data1", "doc-dep/result1", "doc-dep/prog"],
+      "encoding": {"@type": "MediaObject"}
+    },
+    {
+      "@id": "doc-dep/image2",
+      "@type": "ImageObject",
+      "name": "image2",
+      "isBasedOnUrl": ["doc-dep/data2", "doc-dep/result2", "doc-dep/prog"],
+      "encoding": {"@type": "MediaObject"}
+    }
+  ]
+}

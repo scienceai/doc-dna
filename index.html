@@ -15,23 +15,11 @@
       }
     </style>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function(){
-        var x = pkgDna.graph().padding(0.08);
-      
-        d3.selectAll('.chart')
-          .data([
-            pkgDna.compute({name:'mypkg', version:'0.0.0', dataset:[{name:'data', '@id': 'mypkg/0.0.0/dataset/data'}]}),
-            pkgDna.compute(pkgInd),
-            pkgDna.compute(pkg)
-          ])
-          .call(x);
-      });
-    </script>
+    <script src="bundle.js"></script>
   </head>
 
   <body>
-    <div class="chart"></div>    
+    <div class="chart"></div>
     <div class="chart"></div>
     <div class="chart"></div>
   </body>

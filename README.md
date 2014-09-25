@@ -1,20 +1,26 @@
-package-dna
-===========
+doc-dna
+=======
 
-Plot the DNA of a package.jsonld.
+Dependencies graph of the
+[CreativeWork](http://schema.org/CreativeWork) a
+[JSON-LD](http://json-ld.org) document using
+[schema.org](http://schema.org) context.
 
-Adapted for package.jsonld from
+[D3](http://d3js.org/) code is inspired from
 [DependencyWheel](https://github.com/fzaninotto/DependencyWheel) by
 François Zaninotto.
 
 
-# Demo
+## Demo
 
-    npm start
+    npm run debug
 
 and open index.html with a browser
 
-# Test
+## Test
 
     npm test
 
+## Build
+
+    npm run build

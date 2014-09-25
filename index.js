@@ -1,11 +1,12 @@
 var d3 = require('d3')
-  , url = require('url')
-  , pjsonld = require('package-jsonld')
-  , isUrl = require('is-url');
+  , clone = require('clone')
+  , url = require('url');
+
+//avoid to load the whole schema.org ontology in memory
+var TYPES = require('./data/data.json');
 
 /**
- * Adapted from https://github.com/fzaninotto/DependencyWheel for
- * complete source and license (MIT licensed by François Zaninotto)
+ * Adapted from https://github.com/fzaninotto/DependencyWheel
  */
 
 function graph (options) {
@@ -18,11 +19,21 @@ function graph (options) {
 
   var cols = {
     dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"], //RdPu
-    sourceCode: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],    //YlOrRd
+    code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],    //YlOrRd
     article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"], //Greys
-    image: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],  //PuBu
+    image: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],   //PuBu
     audio: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"],   //YlGn
-    video: ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"]    //Reds
+    video: ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"],   //Reds
+    other: ["#fcfbfd","#efedf5","#dadaeb","#bcbddc","#9e9ac8","#807dba","#6a51a3","#54278f","#3f007d"], //Purples
+  };
+
+  function mapSchemaType(type){
+    for (var key in TYPES) {
+      if (~TYPES[key].indexOf(type)){
+        return key;
+      }
+    }
+    return 'other';
   };
 
   function chart(selection) {
@@ -54,7 +65,7 @@ function graph (options) {
 
       var fill = function(d) {
         var label = labels[d.index];
-        return cols[label.type][d.index % cols[label.type].length]
+        return cols[mapSchemaType(label.type)][d.index % cols[mapSchemaType(label.type)].length]
       };
 
       // Returns an event handler for fading a given chord group.
@@ -124,7 +135,7 @@ function graph (options) {
         })
         .text(function(d) {
           if(printType){
-            return (labels[d.index].type === 'dataset') ? 'data': labels[d.index].type;
+            return labels[d.index].type;
           }else {
             if(labels[d.index].name.length>11){
               return labels[d.index].name.slice(0,4) + '...' + labels[d.index].name.slice(labels[d.index].name.length-4,labels[d.index].name.length);
@@ -137,7 +148,7 @@ function graph (options) {
           fade(0.1)(d, i);
 
           var label = labels[d.index];
-          var col = cols[label.type][d.index % cols[label.type].length]
+          var col = cols[mapSchemaType(label.type)][d.index % cols[mapSchemaType(label.type)].length]
 
 
           var el = selection[0][selectionIndex];
@@ -212,81 +223,141 @@ function graph (options) {
   return chart;
 };
 
-/**
- * from uri to local pathname (used as id)
- */
-function _uri2id(uri, name, version){
-  var BASE = pjsonld.BASE;
 
-  var absUrl = (isUrl(uri)) ? uri : url.resolve(BASE, uri);
-  var urlObj = url.parse(absUrl, true);
+function compute(cdoc, opts){
 
-  if(urlObj.hostname === url.parse(BASE).hostname){ //it's a pkg of this registry
-    var id = urlObj.pathname.replace(/^\//, '');
-
-    //check if it's a within pkg uri
-    if(name && version){
-      var splt = id.split('/'); //name, version, ...
-      if(splt[0] === name && splt[1] === version){
-        return id;
+  function _intersect(list1, list2){
+    for (var i=0; i<list1.length; i++){
+      for (var j=0; j<list2.length; j++){
+        if(list1[i] === list2[j]) return true;
       }
-    } else {
-      return id;
+    }
+    return false;
+  };
+
+  function _forEachNode(doc, callback){
+    for (var prop in doc) {
+      if (prop === '@context' || !doc.hasOwnProperty(prop)) continue;
+
+      if (Array.isArray(doc[prop])) {
+        for (var i=0; i<doc[prop].length; i++) {
+          if (typeof doc[prop][i] === 'object') {
+            callback( prop, doc[prop][i]);
+            _forEachNode(doc[prop][i], callback);
+          }
+        }
+      } else if (typeof doc[prop] === 'object') {
+        callback(prop, doc[prop]);
+        _forEachNode(doc[prop], callback);
+      }
+    }
+  };
+
+  function _setIds(cdoc, env) {
+    env = env || {counter: 0};
+
+    if (!('@id' in cdoc) ) {
+      var id = '_:n' + env.counter++;
+      cdoc['@id'] = id;
     }
 
-  }
-};
-
-
-function compute(pkg){
-  var labels = [];
-  var tmp = [];
-  var ndeps = 0;
-
-  [ 'dataset', 'sourceCode', 'image', 'audio', 'video', 'article' ].forEach(function(t){
-    var arr = pkg[t] || [];
-    arr.forEach(function(x){
-      var id = _uri2id(x['@id'], pkg.name, pkg.version);
-      if(id){
-        labels.push({ name: x.name, type: t });
-
-        var deps = [];
-        if (t === 'sourceCode') {
-          (x.targetProduct || []).forEach(function(m){
-            if(m.input){
-              deps = deps.concat(m.input);
-            }
-          });
-        }
-
-        var entry = {
-          id: id,
-          deps: deps
-            .concat(
-              (x.isBasedOnUrl || []),
-              ((x.citation && x.citation.filter(function(c){ return (c.url!=undefined) }).map(function(c){return c.url;})) || [])
-            )
-            .map(function(x){
-              return _uri2id(x, pkg.name, pkg.version);
-            })
-            .filter(function(x) {return x;})
-        };
-
-        tmp.push(entry);
-        ndeps += entry.deps.length;
-      }
+    //traverse
+    _forEachNode(cdoc, function(prop, node){
+      _setIds(node, env);
     });
+
+    return cdoc;
+  };
+
+  //make sure that all node have an @id
+  cdoc = _setIds(clone(cdoc));
+
+  var entries = {};
+  var refs = {};
+  var hasDeps = false;
+
+  //properties making a node a "downloadable"
+  var dprops = ['encoding', 'distribution', 'exampleOfWork', 'codeRepository', 'downloadUrl', 'installUrl'];
+
+  function _getEntry(node){
+    //is the node a downloadable ?
+    if (_intersect(Object.keys(node), dprops)) {
+      refs[node['@id']] = node;
+      entries[node['@id']] = {
+        name: node.name || node['@id'],
+        type: node['@type'] || 'CreativeWork',
+        deps: []
+      };
+    }
+  };
+
+  //unnest
+  _getEntry(cdoc)
+  _forEachNode(cdoc, function(prop, node){
+    _getEntry(node);
   });
 
-  //tmp to matrix TODO optimize with has o(N^2) is not acceptable
+  var keys = Object.keys(entries);
+
+  function _getUrlOfReverseProp(x){
+    if (!x) return;
+
+    x = Array.isArray(x)? x: [x];
+    return x.map(function(y){
+      return (typeof entry.isPartOf === 'string') ? y : y['@id'];
+    });
+  };
+
+  //fill deps
+  keys.forEach(function(key){
+    var node = refs[key];
+    var entry = entries[key];
+    var parts;
+    if (node.hasPart) {
+      parts = Array.isArray(node.hasPart)? node.hasPart: [entry.hasPart];
+    }
+
+    entry.deps = (entry.deps).concat(
+      node.isBasedOnUrl || [],
+      node.requirements || [],
+      _getUrlOfReverseProp(node.isPartOf) || [],
+      _getUrlOfReverseProp(node.sourceCode) || [],
+      _getUrlOfReverseProp(node.workExample) || [],
+      (parts || []).map(function(x){
+        return (typeof x === 'string')? x : x['@id'];
+      })
+    );
+
+    //target products depends on source code
+    if (node.targetProduct) {
+      var targetProducts = Array.isArray(node.targetProduct)? node.targetProduct: [node.targetProduct];
+      targetProducts.forEach(function(tp){
+        var id = (typeof x === 'string')? tp : tp['@id'];
+        console.log(id);
+        entries[id].deps.push(node['@id']);
+      });
+    }
+
+    //only keep within document links
+    entry.deps.filter(function(x){
+      return ~keys.indexOf(x);
+    });
+
+    if (entry.deps.length) {
+      hasDeps = true;
+    }
+  });
+
   var matrix = [];
-  tmp.forEach(function(x, i){
-    var row = Array.apply(null, new Array(tmp.length)).map(Number.prototype.valueOf,0);
-    if(!ndeps){
+  keys.forEach(function(xkey, i){
+    var x = entries[xkey];
+    var row = Array.apply(null, new Array(keys.length)).map(Number.prototype.valueOf,0);
+    if (!hasDeps) {
       row[i] = 1;
     } else {
-      tmp.forEach(function(y, j){
-        if(y.deps.indexOf(x.id) !== -1){
+      keys.forEach(function(ykey, j){
+        var y = entries[ykey];
+        if (y.deps.indexOf(xkey) !== -1) {
           row[j] = 1;
         }
       });
@@ -295,7 +366,7 @@ function compute(pkg){
   });
 
   return {
-    labels: labels,
+    labels: keys.map(function(x) {return {name: entries[x].name, type: entries[x].type}}),
     matrix: matrix
   };
 

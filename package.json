@@ -1,35 +1,45 @@
 {
-  "name": "package-dna",
-  "version": "0.5.0",
-  "description": "dependencies graph of a package.jsonld",
+  "name": "doc-dna",
+  "version": "0.0.0",
+  "description": "dependencies graph of a the CreativeWork of a JSON-LD document using schema.org context",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/watchify demo.js --debug -o bundle.js",
+    "build": "node data/index.js && ./node_modules/.bin/browserify index.js -o bundle.js",
+    "debug": "./node_modules/.bin/watchify -t brfs ./app.js --debug -o bundle.js",
     "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/standard-analytics/package-dna.git"
+    "url": "git://github.com/sballesteros/doc-dna.git"
   },
   "keywords": [
     "hyperdata",
-    "package.jsonld",
+    "JSON-LD",
+    "schema.org",
+    "CreativeWork",
     "dependencies",
     "graph"
   ],
   "author": "Sebastien Ballesteros",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/standard-analytics/package-dna/issues"
+    "url": "https://github.com/sballesteros/doc-dna/issues"
   },
-  "homepage": "https://github.com/standard-analytics/package-dna",
+  "homepage": "https://github.com/sballesteros/doc-dna",
   "devDependencies": {
-    "watchify": "~0.6.1",
-    "mocha": "~1.17.1"
+    "brfs": "^1.2.0",
+    "browserify": "^5.12.0",
+    "mocha": "^1.21.4",
+    "schema-org-io": "0.2.0",
+    "watchify": "^1.0.3"
   },
   "dependencies": {
-    "d3": "~3.4.1",
-    "is-url": "~1.0.0",
-    "package-jsonld": "*"
+    "clone": "^0.1.18",
+    "d3": "^3.4.11"
+  },
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
   }
 }

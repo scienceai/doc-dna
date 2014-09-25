@@ -1,0 +1,28 @@
+{
+  "@context": "https://dcat.io",
+  "@id": "doc ind",
+  "name": "doc-ind",
+  "version": "0.0.0",
+  "hasPart": [
+    {
+      "@id": "doc-indep/data",
+      "@type": "Dataset",
+      "name": "data",
+      "distribution": {"@type": "DataDownload"}
+    },
+
+    {
+      "@id": "doc-dep/prog",
+      "@type": "SoftwareApplication",
+      "name": "prog",
+      "downloadUrl": "http://example.com/prog"
+    },
+
+    {
+      "@id": "doc-indep/image",
+      "@type": "ImageObject",
+      "name": "image",
+      "encoding": {"@type": "MediaObject"}
+    }
+  ]
+}

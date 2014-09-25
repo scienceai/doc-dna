@@ -1,0 +1,30 @@
+{
+  "dataset": [
+    "Dataset"
+  ],
+  "code": [
+    "Code",
+    "SoftwareApplication",
+    "MobileApplication",
+    "WebApplication"
+  ],
+  "article": [
+    "Article",
+    "APIReference",
+    "BlogPosting",
+    "MedicalScholarlyArticle",
+    "NewsArticle",
+    "ScholarlyArticle",
+    "TechArticle",
+    "Book"
+  ],
+  "image": [
+    "ImageObject"
+  ],
+  "audio": [
+    "AudioObject"
+  ],
+  "video": [
+    "VideoObject"
+  ]
+}

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node data/index.js && ./node_modules/.bin/browserify index.js -o bundle.js",
-    "debug": "./node_modules/.bin/watchify -t brfs ./app.js --debug -o bundle.js",
+    "debug": "./node_modules/.bin/watchify -t brfs ./app.js --debug -o demo.js",
     "test": "./node_modules/.bin/mocha"
   },
   "repository": {

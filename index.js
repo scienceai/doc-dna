@@ -277,7 +277,7 @@ function compute(cdoc, opts){
   var hasDeps = false;
 
   //properties making a node a "downloadable"
-  var dprops = ['encoding', 'distribution', 'exampleOfWork', 'codeRepository', 'downloadUrl', 'installUrl'];
+  var dprops = ['encoding', 'distribution', 'codeRepository', 'downloadUrl', 'installUrl'];
 
   function _getEntry(node){
     //is the node a downloadable ?
@@ -304,7 +304,7 @@ function compute(cdoc, opts){
 
     x = Array.isArray(x)? x: [x];
     return x.map(function(y){
-      return (typeof entry.isPartOf === 'string') ? y : y['@id'];
+      return (typeof y === 'string') ? y : y['@id'];
     });
   };
 
@@ -320,9 +320,7 @@ function compute(cdoc, opts){
     entry.deps = (entry.deps).concat(
       node.isBasedOnUrl || [],
       node.requirements || [],
-      _getUrlOfReverseProp(node.isPartOf) || [],
       _getUrlOfReverseProp(node.sourceCode) || [],
-      _getUrlOfReverseProp(node.workExample) || [],
       (parts || []).map(function(x){
         return (typeof x === 'string')? x : x['@id'];
       })
@@ -333,10 +331,18 @@ function compute(cdoc, opts){
       var targetProducts = Array.isArray(node.targetProduct)? node.targetProduct: [node.targetProduct];
       targetProducts.forEach(function(tp){
         var id = (typeof x === 'string')? tp : tp['@id'];
-        console.log(id);
-        entries[id].deps.push(node['@id']);
+        if (id in entries) {
+          entries[id].deps.push(node['@id']);
+        }
       });
     }
+
+    //isPartOf: is x isPartOf y then y depends on x
+    (_getUrlOfReverseProp(node.isPartOf) || []).forEach(function(id){
+      if (id in entries) {
+        entries[id].deps.push(node['@id']);
+      }
+    });
 
     //only keep within document links
     entry.deps.filter(function(x){

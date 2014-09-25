@@ -1,0 +1,42 @@
+{
+  "@context": "https://dcat.io",
+  "@id": "doc-all",
+  "name": "doc all",
+  "encoding": {
+    "contentUrl": "http://example.com/content"
+  },
+  "hasPart": [
+    {
+      "@id": "doc-dep/data1",
+      "@type": "Dataset",
+      "name": "data1",
+      "distribution": {"contentUrl": "http://example.com/data1"}
+    },
+    {
+      "@id": "doc-dep/data2",
+      "@type": "Dataset",
+      "name": "data2",
+      "distribution": {"contentUrl": "http://example.com/data2"},
+      "isPartOf": "doc-dep/data1"
+    },
+    {
+      "@id": "doc-dep/code",
+      "@type": "Code",
+      "name": "code",
+      "downloadUrl": "http://example.com/code",
+      "targetProduct": {
+        "@id": "doc-dep/software",
+        "@type": "SoftwareApplication",
+        "name": "prog",
+        "downloadUrl": "http://example.com/prog"
+      }
+    },
+    {
+      "@id": "doc-dep/software2",
+      "@type": "SoftwareApplication",
+      "name": "prog2",
+      "sourceCode": "doc-dep/code",
+      "downloadUrl": "http://example.com/prog2"
+    }
+  ]
+}

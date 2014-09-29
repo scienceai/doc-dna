@@ -58,7 +58,7 @@ function graph (options) {
         .append("g")
         .attr("transform", "translate(" + (width / 2) + "," + (width / 2) + ")");
 
-      if (!matrix) {
+      if (!matrix || !matrix.length) {
         return;
       }
 

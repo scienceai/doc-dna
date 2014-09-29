@@ -55,9 +55,12 @@ function graph (options) {
       var gEnter = svg.enter().append("svg:svg")
         .attr("width", width)
         .attr("height", width)
-        .attr("class", "dependencyWheel")
         .append("g")
         .attr("transform", "translate(" + (width / 2) + "," + (width / 2) + ")");
+
+      if (!matrix) {
+        return;
+      }
 
       var arc = d3.svg.arc()
         .innerRadius(radius)
@@ -225,7 +228,6 @@ function graph (options) {
 
 
 function compute(cdoc, opts){
-
   function _intersect(list1, list2){
     for (var i=0; i<list1.length; i++){
       for (var j=0; j<list2.length; j++){

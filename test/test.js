@@ -31,7 +31,6 @@ describe('docDna', function(){
     };
 
     var data = docDna.compute(docAll);
-    console.log(data);
     assert.deepEqual(data, expected);
   });
 

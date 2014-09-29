@@ -1,6 +1,6 @@
 {
   "name": "doc-dna",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "dependencies graph of a the CreativeWork of a JSON-LD document using schema.org context",
   "main": "index.js",
   "scripts": {
@@ -36,10 +36,5 @@
   "dependencies": {
     "clone": "^0.1.18",
     "d3": "^3.4.11"
-  },
-  "browserify": {
-    "transform": [
-      "brfs"
-    ]
   }
 }

@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function(){
       docDna.compute(docUnit),
       docDna.compute(docInd),
       docDna.compute(docDep),
-      docDna.compute(docAll)
+      docDna.compute(docAll),
+      {}
     ])
     .call(x);
 });

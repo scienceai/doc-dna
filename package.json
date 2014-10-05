@@ -1,6 +1,6 @@
 {
   "name": "doc-dna",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "dependencies graph of a the CreativeWork of a JSON-LD document using schema.org context",
   "main": "index.js",
   "scripts": {

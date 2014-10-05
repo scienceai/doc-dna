@@ -335,6 +335,7 @@ function compute(cdoc, opts){
         var id = (typeof x === 'string')? tp : tp['@id'];
         if (id in entries) {
           entries[id].deps.push(node['@id']);
+          hasDeps = true;
         }
       });
     }
@@ -343,6 +344,7 @@ function compute(cdoc, opts){
     (_getUrlOfReverseProp(node.isPartOf) || []).forEach(function(id){
       if (id in entries) {
         entries[id].deps.push(node['@id']);
+        hasDeps = true;
       }
     });
 

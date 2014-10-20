@@ -17,15 +17,27 @@ function graph (options) {
     , printType = false
     , padding = 0.06;
 
+  // material design
   var cols = {
-    dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"], //RdPu
-    code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],    //YlOrRd
-    article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"], //Greys
-    image: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],   //PuBu
-    audio: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"],   //YlGn
-    video: ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"],   //Reds
-    other: ["#fcfbfd","#efedf5","#dadaeb","#bcbddc","#9e9ac8","#807dba","#6a51a3","#54278f","#3f007d"], //Purples
+    dataset: ['#aeea00', '#c6ff00', '#eeff41', '#f4ff81'], //Lime
+    code: ['#fdd835', '#ffeb3b', '#ffee58', '#fff176'],    //Yellow
+    article: ['#ff8a65', '#ffab91', '#ffccbc', '#fbe9e7'],   //Deep Orange
+    image: ['#ce93d8', '#e1bee7', '#f3e5f5', '#ba68c8'],   //Purple
+    audio: ['#2baf2b', '#42bd41', '#72d572', '#a3e9a4'],   //Green
+    video: ['#6889ff', '#a6baff', '#4d69ff', '#4d73ff'],   //Blue
+    other: ['#7986cb', '#9fa8da', 'c5cae9', '#e8eaf6'] //Indigo
   };
+
+// cynthia
+//  var cols = {
+//    dataset: ["#fff7f3","#fde0dd","#fcc5c0","#fa9fb5","#f768a1","#dd3497","#ae017e","#7a0177","#49006a"], //RdPu
+//    code: ["#ffffcc","#ffeda0","#fed976","#feb24c","#fd8d3c","#fc4e2a","#e31a1c","#bd0026","#800026"],    //YlOrRd
+//    article: ["#ffffff","#f0f0f0","#d9d9d9","#bdbdbd","#969696","#737373","#525252","#252525","#000000"], //Greys
+//    image: ["#fff7fb","#ece7f2","#d0d1e6","#a6bddb","#74a9cf","#3690c0","#0570b0","#045a8d","#023858"],   //PuBu
+//    audio: ["#ffffe5","#f7fcb9","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#006837","#004529"],   //YlGn
+//    video: ["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d"],   //Reds
+//    other: ["#fcfbfd","#efedf5","#dadaeb","#bcbddc","#9e9ac8","#807dba","#6a51a3","#54278f","#3f007d"],   //Purples
+//  };
 
   function mapSchemaType(type){
     for (var key in TYPES) {
